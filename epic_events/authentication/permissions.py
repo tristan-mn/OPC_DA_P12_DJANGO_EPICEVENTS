@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from crm.models import Event, Client, Contract
+from crm.models import Event, Client
 
 class ClientPermissions(BasePermission):
 
