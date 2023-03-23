@@ -15,6 +15,5 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=64, choices=Role.choices)
     username = models.CharField(max_length=64, unique=True)
     password = models.CharField(max_length=100)
-    phone = models.CharField(max_length=100, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)

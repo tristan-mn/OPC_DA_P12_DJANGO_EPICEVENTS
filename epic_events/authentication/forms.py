@@ -17,6 +17,7 @@ class CustomUserCreationForm(UserCreationForm):
         supports_group = Group.objects.get(name='Supports')
         if user.role == "Manager":
             user.is_superuser = True
+            user.save()
             managers_group.user_set.add(user)
         elif user.role == "Seller":
             user.is_staff = True
