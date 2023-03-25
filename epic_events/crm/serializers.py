@@ -21,8 +21,6 @@ class ClientListSerializer(ModelSerializer):
 
 class ClientDetailSerializer(ModelSerializer):
 
-    sales_contact = UserSerializer()
-
     class Meta:
         model = Client
         fields = '__all__'
@@ -39,8 +37,6 @@ class ContractListSerializer(ModelSerializer):
 
 class ContractDetailSerializer(ModelSerializer):
 
-    client = ClientDetailSerializer()
-
     class Meta:
         model = Contract
         fields = '__all__'
@@ -49,6 +45,8 @@ class ContractDetailSerializer(ModelSerializer):
 class EventListSerializer(ModelSerializer):
 
     client = ClientDetailSerializer()
+    # support_contact = UserSerializer()
+    # event_contract = ContractListSerializer()
 
     class Meta:
         model = Event
@@ -57,9 +55,6 @@ class EventListSerializer(ModelSerializer):
 
 class EventDetailSerializer(ModelSerializer):
 
-    client = ClientListSerializer()
-    support_contact = UserSerializer()
-    event_contract = ContractListSerializer()
 
     class Meta:
         model = Event

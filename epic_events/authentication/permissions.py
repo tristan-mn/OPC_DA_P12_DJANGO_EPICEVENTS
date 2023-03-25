@@ -16,8 +16,8 @@ class ClientPermissions(BasePermission):
             if request.user == obj.sales_contact:
                 return True
                 
-        elif request.user.role == "Manager":
-            return True
+            elif request.user.role == "Manager":
+                return True
 
 
 class ContractPermissions(BasePermission):
@@ -34,8 +34,8 @@ class ContractPermissions(BasePermission):
             if request.user == obj.sales_contact:
                 return True
 
-        elif request.user.role == "Manager":
-            return True
+            elif request.user.role == "Manager":
+                return True
 
 
 class EventPermissions(BasePermission):
@@ -53,5 +53,5 @@ class EventPermissions(BasePermission):
             if request.user.id == obj.support_contact.id or request.user.id == client.sales_contact.id:
                 return True
 
-        elif request.user.role == "Manager":
-            return True
+            elif request.user.role == "Manager":
+                return True

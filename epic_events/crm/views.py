@@ -1,9 +1,11 @@
 import logging
+from datetime import datetime
 
 from django.shortcuts import render
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from crm.models import Client, Contract, Event
@@ -11,6 +13,8 @@ from crm.serializers import ClientListSerializer, ClientDetailSerializer
 from crm.serializers import ContractListSerializer, ContractDetailSerializer
 from crm.serializers import EventListSerializer, EventDetailSerializer
 from authentication.permissions import ClientPermissions, ContractPermissions, EventPermissions
+from authentication.models import CustomUser
+from authentication.serializer import UserSerializer
 # Create your views here.
 
 logger = logging.getLogger(__name__)
@@ -32,6 +36,7 @@ class ClientViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, ClientPermissions]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['last_name', 'email']
+
     
     def get_queryset(self):
         try:
@@ -41,6 +46,36 @@ class ClientViewSet(ModelViewSet):
         else:
             return queryset
 
+    def create(self, request, *args, **kwargs):
+        serializer = ClientDetailSerializer(data=request.data)
+        request.data._mutable = True
+        request.data['sales_contact'] = request.user.id
+        request.data._mutable = False
+        print(request.data)
+        serializer.is_valid()
+        serializer.save()
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+        try:
+            sales_contact = CustomUser.objects.get(id=data['sales_contact'])
+            instance.sales_contact  = sales_contact
+        except KeyError:
+            logger.exception('something went wrong\n')
+
+        instance.first_name = data.get('first_name', instance.first_name)
+        instance.last_name = data.get('last_name', instance.last_name)
+        instance.email = data.get('email', instance.email)
+        instance.phone = data.get('phone', instance.phone)
+        instance.mobile = data.get('mobile', instance.mobile)
+        instance.company_name = data.get('company_name', instance.company_name)
+        instance.client_status = data.get('client_status', instance.client_status)
+
+        serializer = ClientDetailSerializer(instance)
+        instance.save()
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         try:
@@ -52,7 +87,6 @@ class ClientViewSet(ModelViewSet):
             return super().get_serializer_class()
 
 
-
 class ContractViewSet(ModelViewSet):
 
     serializer_class = ContractListSerializer
@@ -60,6 +94,37 @@ class ContractViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, ContractPermissions]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['client', 'date_created', 'amount']
+
+    def create(self, request, *args, **kwargs):
+        serializer = ContractDetailSerializer(data=request.data)
+        request.data._mutable = True
+        request.data['sales_contact'] = request.user.id
+        request.data._mutable = False
+        serializer.is_valid()
+        serializer.save()
+        return Response(serializer.data)
+    
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+        try:
+            client = Client.objects.get(id=data['client'])
+            instance.client = client
+        except KeyError:
+            logger.exception('something went wrong\n')
+        try:
+            sales_contact = CustomUser.objects.get(id=data['sales_contact'])
+            instance.sales_contact  = sales_contact
+        except KeyError:
+            pass
+        instance.amount = data.get('amount', instance.amount)
+        instance.status = data.get('status', instance.status)
+        instance.payment_due = datetime.now().strftime("%Y-%m-%d")
+
+        serializer = ContractDetailSerializer(instance)
+        instance.save()
+        return Response(serializer.data)
 
     def get_queryset(self):
         try:
@@ -90,6 +155,43 @@ class EventViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, EventPermissions]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['client', 'event_date']
+
+    def create(self, request, *args, **kwargs):
+        serializer = EventDetailSerializer(data=request.data)
+        serializer.is_valid()
+        if 'event_date' in serializer.errors:
+            message = 'respect the format : YYYY-MM-DD hh:mm'
+            return Response(message)
+        serializer.save()
+        return Response(serializer.data)
+    
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        data = request.data
+
+        try:
+            client = Client.objects.get(id=data['client'])
+            instance.client = client
+        except KeyError:
+            logger.exception('something went wrong\n')
+
+        try:
+            support_contact = CustomUser.objects.get(id=data['support_contact'])
+            instance.support_contact = support_contact
+        except KeyError:
+            logger.exception('something went wrong\n')
+
+        instance.event_status = data.get('event_status', instance.event_status)
+        instance.attendees = data.get('attendees', instance.attendees)
+        instance.event_date = data.get('event_date', instance.event_date)
+        serializer = EventDetailSerializer(instance)
+        try:
+            instance.save()
+        except:
+            logger.exception('something went wrong\n')
+            return Response('ERROR : respect the format > YYYY-MM-DD hh:mm')
+        return Response(serializer.data)
 
     def get_queryset(self):
         try:
