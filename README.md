@@ -17,3 +17,5 @@ $ python manage.py runserver
 ## Documentation
 
 - La documentation Postman est disponible à cette adresse :
+
+https://documenter.getpostman.com/view/13735082/2s93RNyagp
