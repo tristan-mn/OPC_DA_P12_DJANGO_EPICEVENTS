@@ -5,16 +5,15 @@ from .models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):
-
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = "__all__"
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        managers_group = Group.objects.get(name='Managers')
-        sellers_group = Group.objects.get(name='Sellers')
-        supports_group = Group.objects.get(name='Supports')
+        managers_group = Group.objects.get(name="Managers")
+        sellers_group = Group.objects.get(name="Sellers")
+        supports_group = Group.objects.get(name="Supports")
         if user.role == "Manager":
             user.is_superuser = True
             user.save()
@@ -29,4 +28,3 @@ class CustomUserCreationForm(UserCreationForm):
             supports_group.user_set.add(user)
         user.save()
         return user
-

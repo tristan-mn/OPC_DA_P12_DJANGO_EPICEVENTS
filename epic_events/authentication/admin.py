@@ -10,17 +10,27 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     add_form = CustomUserCreationForm
 
-    list_display = ('id','username', 'first_name', 'last_name', 'email', 'role', 'last_login')
+    list_display = (
+        "id",
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "role",
+        "last_login",
+    )
 
-    fieldsets = (*UserAdmin.fieldsets, ('User role', {'fields': ('role', )}))
+    fieldsets = (*UserAdmin.fieldsets, ("User role", {"fields": ("role",)}))
 
-    add_fieldsets = (*UserAdmin.add_fieldsets, ('Staff', {'fields': ('first_name', 'last_name', 'role')}))
-
+    add_fieldsets = (
+        *UserAdmin.add_fieldsets,
+        ("Staff", {"fields": ("first_name", "last_name", "role")}),
+    )
 
 
 def create_managers_group():
     managers_permissions = Permission.objects.all()
-    managers_group = Group.objects.create(name='Managers')
+    managers_group = Group.objects.create(name="Managers")
     managers_group.permissions.set(managers_permissions)
 
 
@@ -33,8 +43,7 @@ def create_sellers_group():
         elif "contract" in permission.codename:
             sellers_permissions.append(permission)
 
-
-    sellers_group = Group.objects.create(name='Sellers')
+    sellers_group = Group.objects.create(name="Sellers")
     sellers_group.permissions.set(sellers_permissions)
 
 
@@ -47,10 +56,10 @@ def create_supports_group():
         elif "client" in permission.codename:
             supports_permissions.append(permission)
 
-    supports_group = Group.objects.create(name='Supports')
+    supports_group = Group.objects.create(name="Supports")
     supports_group.permissions.set(supports_permissions)
 
-    
+
 if len(Group.objects.all()) == 0:
     create_managers_group()
     create_sellers_group()

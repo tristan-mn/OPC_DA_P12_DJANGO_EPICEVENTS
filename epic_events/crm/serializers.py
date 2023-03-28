@@ -4,10 +4,11 @@ from rest_framework import serializers
 from .models import Client, Contract, Event
 from authentication.models import CustomUser
 
+
 class UserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'role']
+        fields = ["first_name", "last_name", "role"]
 
 
 class ClientListSerializer(ModelSerializer):
@@ -16,14 +17,20 @@ class ClientListSerializer(ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ['id', 'last_name', 'first_name', 'company_name','email', 'sales_contact']
+        fields = [
+            "id",
+            "last_name",
+            "first_name",
+            "company_name",
+            "email",
+            "sales_contact",
+        ]
 
 
 class ClientDetailSerializer(ModelSerializer):
-
     class Meta:
         model = Client
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ContractListSerializer(ModelSerializer):
@@ -32,30 +39,25 @@ class ContractListSerializer(ModelSerializer):
 
     class Meta:
         model = Contract
-        fields = ['id', 'client', 'date_created', 'amount']
+        fields = ["id", "client", "date_created", "amount"]
 
 
 class ContractDetailSerializer(ModelSerializer):
-
     class Meta:
         model = Contract
-        fields = '__all__'
+        fields = "__all__"
 
 
 class EventListSerializer(ModelSerializer):
 
     client = ClientDetailSerializer()
-    # support_contact = UserSerializer()
-    # event_contract = ContractListSerializer()
 
     class Meta:
         model = Event
-        fields = ['id', 'client', 'event_status']
+        fields = ["id", "client", "event_status"]
 
 
 class EventDetailSerializer(ModelSerializer):
-
-
     class Meta:
         model = Event
-        fields = '__all__'
+        fields = "__all__"

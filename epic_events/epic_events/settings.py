@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "authentication",
     "rest_framework",
     "rest_framework_simplejwt",
-    'django_filters',
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -85,7 +85,7 @@ DATABASES = {
         "NAME": "epiceventsbdd",
         "USER": "tristantest",
         "PASSWORD": "123456",
-        "HOST": "localhost"
+        "HOST": "localhost",
     }
 }
 
@@ -125,13 +125,15 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = 'authentication.CustomUser'
+AUTH_USER_MODEL = "authentication.CustomUser"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=100),
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=100),
 }

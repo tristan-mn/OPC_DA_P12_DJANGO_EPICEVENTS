@@ -4,7 +4,6 @@ from django.db import models
 
 # Create your models here.
 class CustomUser(AbstractUser):
-
     class Role(models.TextChoices):
         manager = "Manager"
         seller = "Seller"
